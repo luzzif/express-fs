@@ -1,0 +1,9 @@
+node_modules
+coverage
+.nyc_output
+.gitignore
+.nycrc
+CONTRIBUTING.md
+index.test.js
+LICENSE
+README.md
