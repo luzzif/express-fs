@@ -1,3 +1,6 @@
+[![Coverage Status](https://coveralls.io/repos/github/luzzif/express-fs/badge.svg?branch=master)](https://coveralls.io/github/luzzif/express-fs?branch=master)
+[![Build Status](https://travis-ci.com/luzzif/express-fs.svg?branch=master)](https://travis-ci.com/luzzif/express-fs)
+
 # Express FS
 
 Express FS bootstraps you `express`' app routing based on your project structure,
