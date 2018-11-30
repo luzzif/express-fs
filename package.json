@@ -7,7 +7,7 @@
         "precommit": "npm test",
         "test:dev": "mocha -w .",
         "test": "nyc mocha .",
-        "test:coveralls": "nyc mocha . && nyc report | coveralls"
+        "test:coveralls": "nyc mocha . && nyc report --reporter=text-lcov| coveralls"
     },
     "keywords": [
         "express",
