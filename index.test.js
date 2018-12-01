@@ -26,19 +26,22 @@ describe("setup routes", () => {
         });
 
         it("should drop any unneeded prefix", () => {
-            expect(getSanitizedFsPath(`${__dirname}/api`)).to.equal(`api`);
+            const appRoot = require("app-root-path").path;
+            expect(getSanitizedFsPath(`${appRoot}/api`)).to.equal(`api`);
         });
 
         it("should drop the 'js' extension, if present", () => {
-            expect(getSanitizedFsPath(`${__dirname}/api/get.js`)).to.equal(
+            const appRoot = require("app-root-path").path;
+            expect(getSanitizedFsPath(`${appRoot}/api/get.js`)).to.equal(
                 `api/get`
             );
         });
 
         it("should drop the 'index.js', if present", () => {
-            expect(
-                getSanitizedFsPath(`${__dirname}/api/get/index.js`)
-            ).to.equal(`api/get`);
+            const appRoot = require("app-root-path").path;
+            expect(getSanitizedFsPath(`${appRoot}/api/get/index.js`)).to.equal(
+                `api/get`
+            );
         });
 
         it("should drop any leading slash, if present", () => {
