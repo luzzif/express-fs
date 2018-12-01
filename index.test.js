@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const glob = require("glob");
 const express = require("express");
 const {
-    setupRoutes,
+    fsRouter,
     getSanitizedFsPath,
     getRouteFromFsPath,
     getMethodAndPath
@@ -100,7 +100,7 @@ describe("setup routes", () => {
         const expressFs = proxyquire(".", { express: { Router } });
 
         afterEach(() => {
-            sandbox.resetHistory();
+            sandbox.reset();
             clearModule.all();
             destroyTree(tmpDir);
         });
@@ -110,7 +110,7 @@ describe("setup routes", () => {
             createTree(tmpDir, {
                 "index.js": `exports.handler = ${handler}; exports.middleware = ${middleware};`
             });
-            expressFs.setupRoutes(`${tmpDir}/**/*.js`);
+            expressFs.fsRouter(`${tmpDir}/**/*.js`);
             expect(get.callCount).to.equal(1);
             const call = get.getCall(0);
             expect(call.args).to.have.length(3);
@@ -124,7 +124,7 @@ describe("setup routes", () => {
             createTree(tmpDir, {
                 "index.js": `exports.handler = ${handler}; exports.middleware = ${middleware};`
             });
-            expect(setupRoutes.bind(null, `${tmpDir}/**/*.js`)).to.throw(
+            expect(fsRouter.bind(null, `${tmpDir}/**/*.js`)).to.throw(
                 "invalid method foo for route /"
             );
         });
@@ -134,7 +134,7 @@ describe("setup routes", () => {
             createTree(tmpDir, {
                 "index.js": `exports.middleware = ${middleware};`
             });
-            expect(setupRoutes.bind(null, `${tmpDir}/**/*.js`)).to.throw(
+            expect(fsRouter.bind(null, `${tmpDir}/**/*.js`)).to.throw(
                 "undefined handler for route get@/"
             );
         });
@@ -144,7 +144,7 @@ describe("setup routes", () => {
             createTree(tmpDir, {
                 "index.js": `exports.handler = ${handler};`
             });
-            expressFs.setupRoutes(`${tmpDir}/**/*.js`);
+            expressFs.fsRouter(`${tmpDir}/**/*.js`);
             expect(get.callCount).to.equal(1);
             const call = get.getCall(0);
             expect(call.args).to.have.length(3);
@@ -159,11 +159,19 @@ describe("setup routes", () => {
                 "index.js": `exports.handler = ${handler};`
             });
             const spy = sandbox.spy(console, "log");
-            setupRoutes(`${tmpDir}/**/*.js`, { verbose: true });
+            fsRouter(`${tmpDir}/**/*.js`, { verbose: true });
             expect(spy.callCount).to.equal(1);
             const call = spy.getCall(0);
             expect(call.args).to.have.length(1);
-            expect(call.args[0]).to.equal(`Setup route get@/`);
+            expect(call.args[0]).to.equal(`setup route get@/`);
+        });
+
+        it("should fail when a falsy glob is passed", () => {
+            expect(fsRouter).to.throw();
+        });
+
+        it("should return a use-chainable function when a truthy glob is passed", () => {
+            expect(expressFs.fsRouter("foo")).to.deep.equal(Router());
         });
     });
 });

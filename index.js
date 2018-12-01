@@ -9,7 +9,8 @@ const cleansingRegex = new RegExp(
     "g"
 );
 
-const setupRoutes = (routesPath, options) => {
+const fsRouter = (routesPath, options) => {
+    const { verbose } = options || {};
     glob.sync(routesPath, { absolute: true }).forEach(fsPath => {
         const { method, path, handler, middleware } = getRouteFromFsPath(
             fsPath
@@ -22,9 +23,10 @@ const setupRoutes = (routesPath, options) => {
         }
         router[method](path, middleware || [], handler);
         if (options && options.verbose) {
-            console.log(`Setup route ${method}@${path}`);
+            console.log(`setup route ${method}@${path}`);
         }
     });
+    return router;
 };
 
 const getRouteFromFsPath = fsPath => {
@@ -62,7 +64,7 @@ const getSanitizedFsPath = fsPath => {
 };
 
 module.exports = {
-    setupRoutes,
+    fsRouter,
     getRouteFromFsPath,
     getMethodAndPath,
     getSanitizedFsPath

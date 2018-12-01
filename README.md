@@ -49,5 +49,20 @@ Some examples to clarify the concept (the route is expressed in the format `<met
 -   `foo/bar/post.js` => `POST@/foo/bar`
 -   `patch.js` => `PATCH@/`
 
+In order to make Express FS register one or more `fs-routes`, simply pass a glob to the 
+`fsRouter` function, and pass the result to `express`' `use`.
+
+Example:
+```
+// server.js
+
+const express = require("express");
+const { fsRouter } = require("@luzzif/express-fs");
+
+const app = express().use(fsRouter(`${__dirname}/**/*.js`));
+```
+
+The snippet above registers all those `fs-routes` located under the project's root dir.
+
 By leveraging this approach, Express FS completely eliminates the need for any routing
 setup noide and enforces a clear, straight-forward project structure.
