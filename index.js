@@ -2,10 +2,7 @@ const { Router } = require("express");
 const glob = require("glob");
 const router = Router();
 const cleansingRegex = new RegExp(
-    `(\\.\\/)+|(${require("app-root-path").path.replace(
-        "/",
-        "\\/"
-    )})|(\\/index\\.js)|(\\.js)+`,
+    `(\\.\\/)+|(${__dirname.replace("/", "\\/")})|(\\/index\\.js)|(\\.js)+`,
     "g"
 );
 

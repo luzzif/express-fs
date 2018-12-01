@@ -7,7 +7,7 @@
         "precommit": "npm test",
         "test:dev": "mocha -w .",
         "test": "nyc mocha .",
-        "test:coveralls": "nyc mocha . && nyc report --reporter=text-lcov| coveralls"
+        "test:coveralls": "nyc mocha . && nyc report --reporter=text-lcov | coveralls"
     },
     "keywords": [
         "express",
@@ -22,7 +22,6 @@
     "license": "MIT",
     "repository": "github:luzzif/express-fs",
     "dependencies": {
-        "app-root-path": "^2.1.0",
         "express": "^4.16.4",
         "glob": "^7.1.3"
     },

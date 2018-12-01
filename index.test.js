@@ -26,13 +26,11 @@ describe("setup routes", () => {
         });
 
         it("should drop any unneeded prefix", () => {
-            const appRoot = require("app-root-path").path;
-            expect(getSanitizedFsPath(`${appRoot}/api`)).to.equal(`/api`);
+            expect(getSanitizedFsPath(`${__dirname}/api`)).to.equal(`/api`);
         });
 
         it("should drop the js extension, if present", () => {
-            const appRoot = require("app-root-path").path;
-            expect(getSanitizedFsPath(`${appRoot}/api/get.js`)).to.equal(
+            expect(getSanitizedFsPath(`${__dirname}/api/get.js`)).to.equal(
                 `/api/get`
             );
         });
@@ -47,8 +45,7 @@ describe("setup routes", () => {
         });
 
         it("should evaluate a path that directly represents a method", () => {
-            const appRoot = require("app-root-path").path;
-            tmpDir = `${appRoot}/get`;
+            tmpDir = `${__dirname}/get`;
             createTree(tmpDir, {
                 "index.js": `exports.handler = ${handler}; exports.middleware = ${middleware}`
             });
@@ -60,8 +57,7 @@ describe("setup routes", () => {
         });
 
         it("should evaluate a path that represents an actual route", () => {
-            const appRoot = require("app-root-path").path;
-            tmpDir = `${appRoot}/api`;
+            tmpDir = `${__dirname}/api`;
             createTree(tmpDir, {
                 get: {
                     "index.js": `exports.handler = ${handler}; exports.middleware = ${middleware}`
