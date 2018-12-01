@@ -2,7 +2,7 @@ const { Router } = require("express");
 const glob = require("glob");
 const router = Router();
 const cleansingRegex = new RegExp(
-    `(\\.\\/)+|(${__dirname.replace("/", "\\/")})|(\\/index\\.js)|(\\.js)+`,
+    `(\\.\\/)+|(${__dirname.replace("/", "\\/")}\\/)|(\\/index\\.js)|(\\.js)+`,
     "g"
 );
 
@@ -48,7 +48,7 @@ const getMethodAndPath = rawPath => {
     } else {
         return {
             method: rawPath.substring(lastSlashIndex + 1),
-            path: rawPath.substring(0, lastSlashIndex) || "/"
+            path: rawPath.substring(0, lastSlashIndex)
         };
     }
 };

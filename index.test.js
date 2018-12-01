@@ -26,13 +26,23 @@ describe("setup routes", () => {
         });
 
         it("should drop any unneeded prefix", () => {
-            expect(getSanitizedFsPath(`${__dirname}/api`)).to.equal(`/api`);
+            expect(getSanitizedFsPath(`${__dirname}/api`)).to.equal(`api`);
         });
 
-        it("should drop the js extension, if present", () => {
+        it("should drop the 'js' extension, if present", () => {
             expect(getSanitizedFsPath(`${__dirname}/api/get.js`)).to.equal(
-                `/api/get`
+                `api/get`
             );
+        });
+
+        it("should drop the 'index.js', if present", () => {
+            expect(
+                getSanitizedFsPath(`${__dirname}/api/get/index.js`)
+            ).to.equal(`api/get`);
+        });
+
+        it("should drop any leading slash, if present", () => {
+            expect(getSanitizedFsPath(`${__dirname}/`)).to.equal("");
         });
     });
 
@@ -65,7 +75,7 @@ describe("setup routes", () => {
             });
             const route = getRouteFromFsPath(`${tmpDir}/get`);
             expect(route.method).to.equal("get");
-            expect(route.path).to.equal("/api");
+            expect(route.path).to.equal("api");
             expect(route.handler()).to.equal("handler");
             expect(route.middleware()).to.equal("middleware");
         });
