@@ -1,6 +1,6 @@
 {
     "name": "@luzzif/express-fs",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "description": "Bootstraps you express' app routing based on your project structure",
     "main": "index.js",
     "scripts": {

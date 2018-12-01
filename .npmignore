@@ -6,4 +6,4 @@ coverage
 CONTRIBUTING.md
 index.test.js
 LICENSE
-README.md
+.travis.yml
