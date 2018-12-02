@@ -3,9 +3,9 @@
 
 # Express FS
 
-Express FS bootstraps you `express`' app routing based on your project structure,
-enforcing a neat project structure and removing the need for explicit
-routing definition.
+Express FS bootstraps you `express`' app routing based on your source
+code location, enforcing a neat project structure and removing the
+need for explicit routing definition.
 
 ## Installing
 
@@ -17,9 +17,9 @@ npm install @luzzif/express-fs
 
 The library's basic concept block is the `fs-route`.
 
-In Express FS a `fs-route` is a simple `Node` module which exports an handler and some
-middleware (those are the same entities that you would normally define in `express`
-in order to specify a route).
+In Express FS a `fs-route` is a simple Node module which exports a handler and some
+middleware functions (those are the same entities that you would normally define in
+`express` in order to specify a route).
 
 An example of an `fs-route` can be something like this:
 
@@ -49,20 +49,23 @@ Some examples to clarify the concept (the route is expressed in the format `<met
 -   `foo/bar/post.js` => `POST@/foo/bar`
 -   `patch.js` => `PATCH@/`
 
-In order to make Express FS register one or more `fs-routes`, simply pass a glob to the 
-`fsRouter` function, and pass the result to `express`' `use`.
+In order to make Express FS register one or more `fs-routes`, simply pass the app's root
+(typically `__dirname`) and the glob referencing those Node modules containing an `fs-route`
+definition to the `fsRouter` function, and pass the result to `express`' `use`.
 
 Example:
+
 ```
 // server.js
 
 const express = require("express");
 const { fsRouter } = require("@luzzif/express-fs");
 
-const app = express().use(fsRouter(`${__dirname}/**/*.js`));
+const app = express().use(fsRouter(__dirname, "api/**/*.js"));
 ```
 
-The snippet above registers all those `fs-routes` located under the project's root dir.
+The snippet above registers all those `fs-routes` located under the project's root
+directory `api`.
 
 By leveraging this approach, Express FS completely eliminates the need for any routing
-setup noide and enforces a clear, straight-forward project structure.
+setup and enforces a clear, straight-forward project structure.
