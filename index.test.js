@@ -27,20 +27,20 @@ describe("setup routes", () => {
 
         it("should drop any unneeded prefix", () => {
             expect(getSanitizedFsPath(`${__dirname}/api`, __dirname)).to.equal(
-                `api`
+                "/api"
             );
         });
 
         it("should drop the 'js' extension, if present", () => {
             expect(
                 getSanitizedFsPath(`${__dirname}/api/get.js`, __dirname)
-            ).to.equal(`api/get`);
+            ).to.equal("/api/get");
         });
 
         it("should drop the 'index.js', if present", () => {
             expect(
                 getSanitizedFsPath(`${__dirname}/api/get/index.js`, __dirname)
-            ).to.equal(`api/get`);
+            ).to.equal("/api/get");
         });
 
         it("should drop any leading slash, if present", () => {

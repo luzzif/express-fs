@@ -34,9 +34,7 @@ const fsRouter = (appRoot, globString, options) => {
 const getSanitizedFsPath = (fsPath, appRoot) => {
     return !fsPath
         ? ""
-        : fsPath
-              .replace(appRoot, "")
-              .replace(/\.\/|^\/|\/$|\/index\.js|\.js/g, "");
+        : fsPath.replace(appRoot, "").replace(/\.\/|\/$|\/index\.js|\.js/g, "");
 };
 
 const getRouteFromFsPath = (fsPath, appRoot) => {
@@ -54,7 +52,12 @@ const getRouteFromFsPath = (fsPath, appRoot) => {
 
 const getMethodAndPath = rawPath => {
     const lastSlashIndex = rawPath.lastIndexOf("/");
-    if (lastSlashIndex < 0) {
+    if (lastSlashIndex == 0) {
+        return {
+            method: rawPath.substring(1),
+            path: "/"
+        };
+    } else if (lastSlashIndex < 0) {
         return {
             method: rawPath,
             path: "/"
