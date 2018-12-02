@@ -3,9 +3,9 @@ const glob = require("glob");
 const express = require("express");
 const {
     fsRouter,
-    getSanitizedFsPath,
     getRouteFromFsPath,
-    getMethodAndPath
+    getMethodAndPath,
+    getSanitizedFsPath
 } = require(".");
 const path = require("path");
 const os = require("os");
@@ -26,26 +26,25 @@ describe("setup routes", () => {
         });
 
         it("should drop any unneeded prefix", () => {
-            const appRoot = require("app-root-path").path;
-            expect(getSanitizedFsPath(`${appRoot}/api`)).to.equal(`api`);
+            expect(getSanitizedFsPath(`${__dirname}/api`, __dirname)).to.equal(
+                `api`
+            );
         });
 
         it("should drop the 'js' extension, if present", () => {
-            const appRoot = require("app-root-path").path;
-            expect(getSanitizedFsPath(`${appRoot}/api/get.js`)).to.equal(
-                `api/get`
-            );
+            expect(
+                getSanitizedFsPath(`${__dirname}/api/get.js`, __dirname)
+            ).to.equal(`api/get`);
         });
 
         it("should drop the 'index.js', if present", () => {
-            const appRoot = require("app-root-path").path;
-            expect(getSanitizedFsPath(`${appRoot}/api/get/index.js`)).to.equal(
-                `api/get`
-            );
+            expect(
+                getSanitizedFsPath(`${__dirname}/api/get/index.js`, __dirname)
+            ).to.equal(`api/get`);
         });
 
         it("should drop any leading slash, if present", () => {
-            expect(getSanitizedFsPath(`${__dirname}/`)).to.equal("");
+            expect(getSanitizedFsPath(`${__dirname}/`, __dirname)).to.equal("");
         });
     });
 
@@ -58,11 +57,11 @@ describe("setup routes", () => {
         });
 
         it("should evaluate a path that directly represents a method", () => {
-            tmpDir = `${__dirname}/get`;
+            tmpDir = "./get";
             createTree(tmpDir, {
                 "index.js": `exports.handler = ${handler}; exports.middleware = ${middleware}`
             });
-            const route = getRouteFromFsPath(tmpDir);
+            const route = getRouteFromFsPath(tmpDir, __dirname);
             expect(route.method).to.equal("get");
             expect(route.path).to.equal("/");
             expect(route.handler()).to.equal("handler");
@@ -70,13 +69,13 @@ describe("setup routes", () => {
         });
 
         it("should evaluate a path that represents an actual route", () => {
-            tmpDir = `${__dirname}/api`;
+            tmpDir = `./api`;
             createTree(tmpDir, {
                 get: {
                     "index.js": `exports.handler = ${handler}; exports.middleware = ${middleware}`
                 }
             });
-            const route = getRouteFromFsPath(`${tmpDir}/get`);
+            const route = getRouteFromFsPath(`${tmpDir}/get`, __dirname);
             expect(route.method).to.equal("get");
             expect(route.path).to.equal("api");
             expect(route.handler()).to.equal("handler");
@@ -119,7 +118,7 @@ describe("setup routes", () => {
             createTree(tmpDir, {
                 "index.js": `exports.handler = ${handler}; exports.middleware = ${middleware};`
             });
-            expressFs.fsRouter(`${tmpDir}/**/*.js`);
+            expressFs.fsRouter(__dirname, `${tmpDir}/**/*.js`);
             expect(get.callCount).to.equal(1);
             const call = get.getCall(0);
             expect(call.args).to.have.length(3);
@@ -133,9 +132,9 @@ describe("setup routes", () => {
             createTree(tmpDir, {
                 "index.js": `exports.handler = ${handler}; exports.middleware = ${middleware};`
             });
-            expect(fsRouter.bind(null, `${tmpDir}/**/*.js`)).to.throw(
-                "invalid method foo for route /"
-            );
+            expect(
+                fsRouter.bind(null, __dirname, `${tmpDir}/**/*.js`)
+            ).to.throw("invalid method foo for route /");
         });
 
         it("should fail if no handler method is specified", () => {
@@ -143,9 +142,9 @@ describe("setup routes", () => {
             createTree(tmpDir, {
                 "index.js": `exports.middleware = ${middleware};`
             });
-            expect(fsRouter.bind(null, `${tmpDir}/**/*.js`)).to.throw(
-                "undefined handler for route get@/"
-            );
+            expect(
+                fsRouter.bind(null, __dirname, `${tmpDir}/**/*.js`)
+            ).to.throw("undefined handler for route get@/");
         });
 
         it("should provide an empty middleware if none is specified", () => {
@@ -153,7 +152,7 @@ describe("setup routes", () => {
             createTree(tmpDir, {
                 "index.js": `exports.handler = ${handler};`
             });
-            expressFs.fsRouter(`${tmpDir}/**/*.js`);
+            expressFs.fsRouter(__dirname, `${tmpDir}/**/*.js`);
             expect(get.callCount).to.equal(1);
             const call = get.getCall(0);
             expect(call.args).to.have.length(3);
@@ -168,7 +167,7 @@ describe("setup routes", () => {
                 "index.js": `exports.handler = ${handler};`
             });
             const spy = sandbox.spy(console, "log");
-            fsRouter(`${tmpDir}/**/*.js`, { verbose: true });
+            fsRouter(__dirname, `${tmpDir}/**/*.js`, { verbose: true });
             expect(spy.callCount).to.equal(1);
             const call = spy.getCall(0);
             expect(call.args).to.have.length(1);
@@ -180,7 +179,9 @@ describe("setup routes", () => {
         });
 
         it("should return a use-chainable function when a truthy glob is passed", () => {
-            expect(expressFs.fsRouter("foo")).to.deep.equal(Router());
+            expect(expressFs.fsRouter(__dirname, "foo/bar")).to.deep.equal(
+                Router()
+            );
         });
     });
 });

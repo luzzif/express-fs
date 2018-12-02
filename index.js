@@ -1,36 +1,47 @@
 const { Router } = require("express");
 const glob = require("glob");
 const router = Router();
-const cleansingRegex = new RegExp(
-    `(\\.\\/)+|(${require("app-root-path").path.replace(
-        "/",
-        "\\/"
-    )}\\/)|(\\/index\\.js)|(\\.js)+`,
-    "g"
-);
+const path = require("path");
+const escapeStringRegexp = require("escape-string-regexp");
 
-const fsRouter = (routesPath, options) => {
+let cleansingRegex = null;
+
+const fsRouter = (appRoot, globString, options) => {
     const { verbose } = options || {};
-    glob.sync(routesPath, { absolute: true }).forEach(fsPath => {
-        const { method, path, handler, middleware } = getRouteFromFsPath(
-            fsPath
-        );
-        if (!router[method]) {
-            throw new Error(`invalid method ${method} for route ${path}`);
+    glob.sync(path.join(appRoot, globString), { absolute: true }).forEach(
+        fsPath => {
+            const { method, path, handler, middleware } = getRouteFromFsPath(
+                fsPath,
+                appRoot
+            );
+            if (!router[method]) {
+                throw new Error(`invalid method ${method} for route ${path}`);
+            }
+            if (!handler) {
+                throw new Error(
+                    `undefined handler for route ${method}@${path}`
+                );
+            }
+            router[method](path, middleware || [], handler);
+            if (verbose) {
+                console.log(`setup route ${method}@${path}`);
+            }
         }
-        if (!handler) {
-            throw new Error(`undefined handler for route ${method}@${path}`);
-        }
-        router[method](path, middleware || [], handler);
-        if (options && options.verbose) {
-            console.log(`setup route ${method}@${path}`);
-        }
-    });
+    );
     return router;
 };
 
-const getRouteFromFsPath = fsPath => {
-    const { method, path } = getMethodAndPath(getSanitizedFsPath(fsPath));
+const getSanitizedFsPath = (fsPath, appRoot) => {
+    return !fsPath
+        ? ""
+        : fsPath
+              .replace(appRoot, "")
+              .replace(/\.\/|^\/|\/$|\/index\.js|\.js/g, "");
+};
+
+const getRouteFromFsPath = (fsPath, appRoot) => {
+    const sanitizedPath = getSanitizedFsPath(fsPath, appRoot);
+    const { method, path } = getMethodAndPath(sanitizedPath);
     const route = require(fsPath);
     const { handler, middleware } = route;
     return {
@@ -56,16 +67,9 @@ const getMethodAndPath = rawPath => {
     }
 };
 
-const getSanitizedFsPath = fsPath => {
-    if (!fsPath) {
-        return "";
-    }
-    return fsPath.replace(cleansingRegex, "");
-};
-
 module.exports = {
     fsRouter,
     getRouteFromFsPath,
-    getMethodAndPath,
-    getSanitizedFsPath
+    getSanitizedFsPath,
+    getMethodAndPath
 };
