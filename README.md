@@ -3,7 +3,7 @@
 
 # Express FS
 
-Express FS bootstraps you `express`' app routing based on your source
+Express FS bootstraps your `express`' app routing based on your source
 code location, enforcing a neat project structure and removing the
 need for explicit routing definition.
 
@@ -61,7 +61,7 @@ Example:
 const express = require("express");
 const { fsRouter } = require("@luzzif/express-fs");
 
-const app = express().use(fsRouter(__dirname, "api/**/*.js"));
+const app = express().use(fsRouter(__dirname, "api/**/index.js"));
 ```
 
 The snippet above registers all those `fs-routes` located under the project's root
