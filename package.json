@@ -29,7 +29,7 @@
     },
     "devDependencies": {
         "chai": "^4.2.0",
-        "clear-module": "^3.0.0",
+        "clear-module": "^3.1.0",
         "coveralls": "^3.0.2",
         "create-fs-tree": "^1.0.0",
         "husky": "^1.2.0",
