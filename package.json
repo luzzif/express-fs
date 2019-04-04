@@ -22,7 +22,7 @@
     "license": "MIT",
     "repository": "github:luzzif/express-fs",
     "dependencies": {
-        "app-root-path": "^2.1.0",
+        "app-root-path": "^2.2.1",
         "escape-string-regexp": "^1.0.5",
         "express": "^4.16.4",
         "glob": "^7.1.3"
