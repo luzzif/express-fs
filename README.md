@@ -13,6 +13,12 @@ need for explicit routing definition.
 npm install @luzzif/express-fs
 ```
 
+or
+
+```
+yarn add @luzzif/express-fs
+```
+
 ## How to use
 
 The library's basic concept block is the `fs-route`.

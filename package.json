@@ -4,7 +4,7 @@
     "description": "Bootstraps you express' app routing based on your project structure",
     "main": "index.js",
     "scripts": {
-        "precommit": "npm test",
+        "precommit": "yarn test",
         "test:dev": "mocha -w .",
         "test": "nyc mocha .",
         "test:coveralls": "nyc mocha . && nyc report --reporter=text-lcov | coveralls"
